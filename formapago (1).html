@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pasarela Híbrida de Pagos – Reino manto</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #d4af37;
+    }
+    form {
+      background-color: #222;
+      border: 1px solid #444;
+      padding: 30px;
+      border-radius: 15px;
+      display: inline-block;
+      text-align: left;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      background-color: #d4af37;
+      color: black;
+      font-weight: bold;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .wallet-section {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pasarela de Pagos del Reino</h1>
+  <p>Selecciona tu método de pago y completa los datos</p>
+
+  <form>
+    <label>Nombre completo</label>
+    <input type="text" required>
+
+    <label>Correo electrónico</label>
+    <input type="email" required>
+
+    <label>Monto a pagar</label>
+    <input type="number" required placeholder="Ej: 10000">
+
+    <label>Método de pago</label>
+    <select id="payment-method" onchange="toggleWallet()">
+      <option value="nequi">💜 Nequi</option>
+      <option value="daviplata">❤️ Daviplata</option>
+      <option value="mantoWallet">🌐 mantoWallet</option>
+    </select>
+
+    <div id="phone-section">
+      <label>Tu número de teléfono</label>
+      <input type="tel" placeholder="Ej: 3001234567">
+    </div>
+
+    <div class="wallet-section" id="wallet-section" style="display: none;">
+      <p>Conecta tu wallet para pagar con manto, USDC o SOL</p>
+      <button type="button" onclick="connectWallet()">🔐 Conectar Wallet</button>
+      <p id="walletStatus" style="color: #d4af37;"></p>
+    </div>
+
+    <label>Subir comprobante de pago (opcional)</label>
+    <input type="file">
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div style="margin-top: 50px;">
+    <h3>📲 Datos oficiales del Reino</h3>
+    <p>Nequi: <strong>3332661025</strong></p>
+    <p>Daviplata: <strong>3332661025</strong></p>
+  </div>
+
+  <script>
+    function toggleWallet() {
+      const method = document.getElementById("payment-method").value;
+      document.getElementById("wallet-section").style.display = (method === "mantoWallet") ? "block" : "none";
+      document.getElementById("phone-section").style.display = (method === "mantoWallet") ? "none" : "block";
+    }
+
+    async function connectWallet() {
+      if ('solana' in window) {
+        const provider = window.solana;
+        if (provider.isPhantom || provider.isManto) {
+          try {
+            const resp = await provider.connect();
+            document.getElementById("walletStatus").innerText = `✅ Conectado: ${resp.publicKey.toString()}`;
+          } catch (err) {
+            document.getElementById("walletStatus").innerText = '❌ Conexión cancelada';
+          }
+        } else {
+          document.getElementById("walletStatus").innerText = '❗ Instala Phantom o mantoWallet';
+        }
+      } else {
+        window.open('https://phantom.app/', '_blank');
+      }
+    }
+  </script>
+</body>
+</html>
