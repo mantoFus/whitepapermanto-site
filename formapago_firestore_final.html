@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario de Pagos - Firestore</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: #d4af37; }
+    form {
+      background-color: #222;
+      padding: 30px;
+      border-radius: 12px;
+      display: inline-block;
+      text-align: left;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
+    }
+    label { font-weight: bold; }
+    button {
+      background-color: #d4af37;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 20px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .result { margin-top: 20px; color: #0f0; }
+  </style>
+</head>
+<body>
+  <h1>Registro de Pago Híbrido</h1>
+  <form id="pagoForm">
+    <label>Nombre completo</label>
+    <input type="text" id="nombre" required>
+
+    <label>Correo electrónico</label>
+    <input type="email" id="correo" required>
+
+    <label>Monto a pagar</label>
+    <input type="number" id="monto" required>
+
+    <label>Método de pago</label>
+    <select id="metodo">
+      <option value="nequi">💜 Nequi</option>
+      <option value="daviplata">❤️ Daviplata</option>
+      <option value="mantoWallet">🌐 mantoWallet</option>
+    </select>
+
+    <label>Número de teléfono (Fiat)</label>
+    <input type="tel" id="telefono" placeholder="Solo si aplica">
+
+    <label>Hash de wallet (si aplica)</label>
+    <input type="text" id="wallet" placeholder="0x...">
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <p class="result" id="estado"></p>
+
+  <script>
+    
+const firebaseConfig = {
+  apiKey: "AIzaSyBXcvGAjR5YrvoL167bUcebY9-blCftYQ8",
+  authDomain: "whitepapermanto-com.firebaseapp.com",
+  projectId: "whitepapermanto-com",
+  storageBucket: "whitepapermanto-com.firebasestorage.app",
+  messagingSenderId: "501277294952",
+  appId: "1:501277294952:web:8b28cb504a5b4039b7d6dd",
+  measurementId: "G-3Y132X6MEJ"
+};
+
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById("pagoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = {
+        nombre: document.getElementById("nombre").value,
+        correo: document.getElementById("correo").value,
+        monto: document.getElementById("monto").value,
+        metodo: document.getElementById("metodo").value,
+        telefono: document.getElementById("telefono").value,
+        wallet: document.getElementById("wallet").value,
+        timestamp: new Date().toISOString()
+      };
+      try {
+        await db.collection("pagos_manto").add(data);
+        document.getElementById("estado").innerText = "✅ Pago registrado exitosamente.";
+      } catch (err) {
+        document.getElementById("estado").innerText = "❌ Error al registrar el pago.";
+      }
+    });
+  </script>
+</body>
+</html>
