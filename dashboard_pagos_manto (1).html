@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Pagos del Reino</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 40px;
+    }
+    h1 {
+      text-align: center;
+      color: #d4af37;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #555;
+      text-align: left;
+    }
+    th {
+      background-color: #222;
+      color: #d4af37;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+  <h1>📜 Dashboard de Pagos – manto MT</h1>
+  <table id="tablaPagos">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Monto</th>
+        <th>Método</th>
+        <th>Teléfono</th>
+        <th>Wallet</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXcvGAjR5YrvoL167bUcebY9-blCftYQ8",
+      authDomain: "whitepapermanto-com.firebaseapp.com",
+      projectId: "whitepapermanto-com",
+      storageBucket: "whitepapermanto-com.firebasestorage.app",
+      messagingSenderId: "501277294952",
+      appId: "1:501277294952:web:8b28cb504a5b4039b7d6dd",
+      measurementId: "G-3Y132X6MEJ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const tabla = document.getElementById("tablaPagos").getElementsByTagName("tbody")[0];
+
+    db.collection("pagos_manto").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+      tabla.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = tabla.insertRow();
+        row.innerHTML = `
+          <td>${data.nombre || "-"}</td>
+          <td>${data.correo || "-"}</td>
+          <td>${data.monto || "-"}</td>
+          <td>${data.metodo || "-"}</td>
+          <td>${data.telefono || "-"}</td>
+          <td>${data.wallet || "-"}</td>
+          <td>${new Date(data.timestamp).toLocaleString()}</td>
+        `;
+      });
+    });
+  </script>
+</body>
+</html>
