@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>WhitePaper Manto</title>
+</head>
+<body style="background-color: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 40px;">
+  <main>
+    <h1 style="color: #d4af37;">Bienvenido al Reino Manto</h1>
+    <p>Lee el White Paper del Reino y transforma tu visión.</p>
+
+    <!-- Botón de Pasarela de Pagos -->
+    <div style="margin-top: 30px;">
+      <a href="formapago.html" style="
+        background-color: #d4af37;
+        color: black;
+        font-weight: bold;
+        padding: 14px 28px;
+        border-radius: 12px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        box-shadow: 0 0 15px #d4af37;
+      ">
+        💳 Realizar Pago (Fiat + mantoWallet)
+      </a>
+    </div>
+  </main>
+
+  <!-- Botón de conexión mantoWallet -->
+  <div style="text-align:center; margin-top: 50px;">
+    <button id="connectWalletBtn" style="
+      background-color: #d4af37;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 20px #d4af37;
+      transition: transform 0.2s ease;
+    ">
+      🔐 Conectar mantoWallet
+    </button>
+    <p id="walletStatus" style="margin-top: 15px; color: #fff;"></p>
+  </div>
+
+  <!-- Script para conectar Phantom o mantoWallet -->
+  <script>
+    const connectBtn = document.getElementById('connectWalletBtn');
+    const walletStatus = document.getElementById('walletStatus');
+
+    connectBtn.addEventListener('click', async () => {
+      if ('solana' in window) {
+        const provider = window.solana;
+        if (provider.isPhantom || provider.isManto) {
+          try {
+            const resp = await provider.connect();
+            walletStatus.innerText = `✅ Conectado: ${resp.publicKey.toString()}`;
+          } catch (err) {
+            walletStatus.innerText = '❌ Conexión cancelada';
+          }
+        } else {
+          walletStatus.innerText = '❗ Instala Phantom o mantoWallet para continuar';
+          window.open('https://phantom.app/', '_blank');
+        }
+      } else {
+        walletStatus.innerText = '❗ No se detectó wallet Web3';
+        window.open('https://phantom.app/', '_blank');
+      }
+    });
+  </script>
+
+  <footer style="margin-top: 80px;">
+    <p>&copy; 2025 manto MT. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>
